@@ -24,8 +24,6 @@ VERSION = 3.2
 WIDTH = 600
 HEIGHT = 400
 APP_NAME = f"Mouse Pad {WIDTH}x{HEIGHT} [{VERSION}] 3rd gen"
-pygame.display.set_caption(APP_NAME)
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
 fnts = 20
 x = WIDTH / 6
 y = 10
@@ -35,7 +33,12 @@ press = (255, 255, 0)
 non_press = (0, 255, 255)
 non_txt = (70, 70, 70)
 dot_width = 2
+mpos = []
+fullcheck = False
+mode = pygame.RESIZABLE
 while runtime:
+	pygame.display.set_caption(APP_NAME)
+	screen = pygame.display.set_mode((WIDTH, HEIGHT), mode)
 	font = pygame.font.SysFont('Consolas', fnts)
 	
 	for event in pygame.event.get():
@@ -45,13 +48,30 @@ while runtime:
 			if event.key == pygame.K_ESCAPE:
 				runtime = False
 			if event.key == pygame.K_F11:
-				WIDTH = int(getscreen_res()[0])
-				HEIGHT = int(getscreen_res()[1])
-				APP_NAME = f"Mouse Pad FULL SCREEN, Resolution: {WIDTH}x{HEIGHT} [{VERSION}] 3rd gen"
-				x = WIDTH / 3
-				fnts = 30
-				time.sleep(secs-0.5)
-				screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+				fullcheck = not fullcheck
+				if fullcheck:
+					org_res = [WIDTH, HEIGHT]
+					WIDTH = int(getscreen_res()[0])
+					HEIGHT = int(getscreen_res()[1])
+					bn = APP_NAME
+					APP_NAME = f"Mouse Pad FULL SCREEN, Resolution: {WIDTH}x{HEIGHT} [{VERSION}] 3rd gen"
+					bx = x
+					x = WIDTH / 3
+					bf = fnts
+					fnts = 30
+					time.sleep(secs-0.5)
+					bm = mode
+					mode = pygame.FULLSCREEN
+					# screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+				else:
+					WIDTH = org_res[0]
+					HEIGHT = org_res[1]
+					APP_NAME = bn
+					x = bx
+					fnts = bf
+					time.sleep(secs-0.5)
+					mode = bm
+					# screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 		if event.type == pygame.MOUSEWHEEL:
 			screen.blit(font.render(f"{scripts[4]} {mouseX}, Y: {mouseY}", True, press), (x, y+30))
@@ -75,7 +95,8 @@ while runtime:
 
 	pygame.display.update()
 	time.sleep(0.01)
-	hue += 0.00079
+	# hue += 0.00079
+	hue += 0.00099
 	pygame.display.flip()
 pygame.quit()
 
